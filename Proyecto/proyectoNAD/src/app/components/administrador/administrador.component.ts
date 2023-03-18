@@ -1,7 +1,7 @@
 import { Usuario } from './../../models/Usuario';
 import { Component, OnInit } from '@angular/core';
 import {UsuariosService} from '../../services/usuarios.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-administrador',
@@ -13,21 +13,22 @@ export class AdministradorComponent implements OnInit {
    usuarios: Usuario[]=[];
    campo: string = 'nombreUsuario';
    orden: number = 1;
+   filtro: string = "";
+   valor:string = "";
 
-  constructor(private _adminService: UsuariosService,
-              private http: HttpClient) {}
+  constructor(private _adminService: UsuariosService) {}
   ngOnInit(): void {
-    //this.obtenerUsuarios();
+    this.obtenerUsuarios();
      //this.obtenerUsuariosOrdenados();
-     this._adminService
-      .getUsuariosOrdenados(this.campo, this.orden)
-      .subscribe((usuarios) => (this.usuarios = usuarios));
+    //  this._adminService
+    //   .getUsuariosOrdenados(this.campo, this.orden,this.filtro,this.valor)
+    //   .subscribe((usuarios) => (this.usuarios = usuarios));
   }
 
   obtenerUsuarios(){
     this._adminService.getUsuarios().subscribe(data=>{
       console.log(data);
-      this.listUsuarios=data;
+      this.usuarios=data;
     },error=>{
       console.log(error);
     });
@@ -42,7 +43,7 @@ console.log(error);
   }
   obtenerUsuariosOrdenados(): void {
     this._adminService
-      .getUsuariosOrdenados(this.campo, this.orden)
+      .getUsuariosOrdenados(this.campo, this.orden,this.filtro,this.valor)
       .subscribe((usuarios) => (this.usuarios = usuarios));
   }
 
@@ -53,6 +54,20 @@ console.log(error);
 
   handleChangeOrden(event: Event): void {
     this.orden = Number((event.target as HTMLSelectElement).value);
+    this.obtenerUsuariosOrdenados();
+  }
+
+  handleChangeFiltro(event: Event): void {
+    this.filtro = (event.target as HTMLSelectElement).value;
+  }
+
+  // handleChangeInput(event: Event): void {
+  //   this.valor = (event.target as HTMLInputElement).value;
+  //   this.obtenerUsuariosOrdenados();
+  // }
+  
+  handleChangeInput( valor: string): void {
+    this.valor = valor;
     this.obtenerUsuariosOrdenados();
   }
   

@@ -31,10 +31,12 @@ export class UsuariosService {
     return this.http.put(this.url + id, usuario);
   }
   
-  getUsuariosOrdenados(campo: string, orden: number): Observable<Usuario[]> {
+  getUsuariosOrdenados(campo: string, orden: number, filtro:string, valor:string): Observable<Usuario[]> {
     const params = new HttpParams()
       .set('campo', campo)
-      .set('orden', orden);
+      .set('orden', orden)
+      .set('filtro', filtro)
+      .set('valor', valor);
     console.log(params); // Agrega esta línea para ver los parámetros en la consola
     return this.http.get<Usuario[]>(this.url, { params });
   }  
