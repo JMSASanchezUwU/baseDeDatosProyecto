@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
     }
     console.log(USUARIO);
     this._usuarioService.crearUsuario(USUARIO).subscribe(data =>{
+      alert("Se ha creado el usuario exitosamente!!!");
       window.location.reload();
     },error =>{
       console.log(error);

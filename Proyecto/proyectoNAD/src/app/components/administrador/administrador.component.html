@@ -8,6 +8,7 @@
             <div class="col-md-6">
               <label for="filtro" class="form-label">Buscar por:</label>
               <select id="filtro" class="form-select"  [(ngModel)]="filtro" (change)="handleChangeFiltro($event)">
+                <option value="null">Todos</option>
                 <option value="nombreUsuario">Nombre Usuario</option>
                 <option value="apePaterno">Apellido Paterno</option>
                 <option value="apeMaterno">Apellido Materno</option>

@@ -1,11 +1,16 @@
 const Usuario = require("../models/Usuario");
+const CryptoJS = require("crypto-js");
 
 exports.crearUsuario = async (req, res) => {
   try {
     let usuario;
-
+    
+     // Encriptar la contraseña utilizando MD5
+     const contrasenaEncriptada = CryptoJS.MD5(req.body.contrasena).toString();
     //Se crea el usuario
     usuario = new Usuario(req.body);
+
+    usuario.contrasena=contrasenaEncriptada;
 
     await usuario.save();
     res.send(usuario);
@@ -140,7 +145,14 @@ exports.obtenerUsuariosOrdenados = async (req, res) => {
     const orden = parseInt(req.query.orden);
     const filtro = req.query.filtro;
     const valor = req.query.valor;
-    const usuarios = await Usuario.find({ [filtro]: valor }).sort({ [campo]: orden });
+    let usuarios = [];
+    if (!(filtro == "null")) {
+      usuarios = await Usuario.find({ [filtro]: valor }).sort({ [campo]: orden });
+    } else {
+      usuarios = await Usuario.find().sort({ [campo]: orden });
+    }
+
+
     res.json(usuarios);
   } catch (error) {
     console.log(error);

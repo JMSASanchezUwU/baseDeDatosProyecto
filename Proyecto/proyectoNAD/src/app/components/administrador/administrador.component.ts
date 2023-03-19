@@ -13,7 +13,7 @@ export class AdministradorComponent implements OnInit {
    usuarios: Usuario[]=[];
    campo: string = 'nombreUsuario';
    orden: number = 1;
-   filtro: string = "";
+   filtro: string = "null";
    valor:string = "";
 
   constructor(private _adminService: UsuariosService) {}
@@ -36,7 +36,12 @@ export class AdministradorComponent implements OnInit {
 
   eliminarUsuario(id:any){
     this._adminService.eliminarUsuario(id).subscribe(data =>{
-      this.obtenerUsuariosOrdenados();
+      if (this.filtro =="" && this.valor=="") {
+        this.obtenerUsuarios();
+      } else {
+        this.obtenerUsuariosOrdenados();
+      }
+     
     },error=>{
 console.log(error);
     });
