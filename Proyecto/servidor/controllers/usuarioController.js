@@ -13,6 +13,7 @@ exports.crearUsuario = async (req, res) => {
     usuario.contrasena=contrasenaEncriptada;
 
     await usuario.save();
+
     res.send(usuario);
 
   } catch (error) {
@@ -157,5 +158,40 @@ exports.obtenerUsuariosOrdenados = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send('Hubo un error!!! :(');
+  }
+}
+
+exports.login=async (req,res)=>{
+  const {email, contrasena}= req.body;
+   try {
+    const usuario = await Usuario.findOne({email});
+    if (!usuario) {
+      return res.status(400).json({
+        ok:false,
+        msg: 'El email no existe'
+      });
+    }
+     const contrasenaEncriptada = CryptoJS.MD5(req.body.contrasena).toString();
+
+     if (!(contrasenaEncriptada==usuario.contrasena)) {
+       return res.status(400).json({
+        ok:false,
+        msg: 'Contraseña invalida'
+      });
+     }
+
+     //Generar JWT
+     res.json({
+      ok:true,
+      nomUsuario: usuario.nomUsuario
+     });
+    
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok:false,
+      msg: 'Hubo un problema'
+    });
   }
 }
