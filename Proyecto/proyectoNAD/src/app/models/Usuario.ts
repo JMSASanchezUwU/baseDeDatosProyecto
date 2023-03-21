@@ -1,13 +1,13 @@
 export class Usuario {
     _id?: number;
-    nombreUsuario: string;
-    apePaterno: string;
-    apeMaterno: string;
+    nombreUsuario?: string;
+    apePaterno?: string;
+    apeMaterno?: string;
     email: string;
-    edad: number;
-    genero: string;
-    rol: string;
-    empresa: string;
+    edad?: number;
+    genero?: string;
+    rol?: string;
+    empresa?: string;
     status?: number;
     contrasena:string;
 

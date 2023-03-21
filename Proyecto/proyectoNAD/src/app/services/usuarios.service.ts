@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class UsuariosService {
   url = 'http://localhost:4000/api/Usuario/';
+  urlLogin = 'http://localhost:4000/api/Usuario/login';
 
   constructor(private http: HttpClient) {}
 
@@ -40,4 +41,8 @@ export class UsuariosService {
     console.log(params); // Agrega esta línea para ver los parámetros en la consola
     return this.http.get<Usuario[]>(this.url, { params });
   }  
+
+  logearUsuario(email:string, contrasena:string):Observable<any>{
+    return this.http.post(this.urlLogin, {email,contrasena});
+  }
 }

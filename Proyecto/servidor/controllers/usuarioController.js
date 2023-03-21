@@ -1,5 +1,6 @@
 const Usuario = require("../models/Usuario");
 const CryptoJS = require("crypto-js");
+const {generarJWT}= require('../controllers/helpers/jwt');
 
 exports.crearUsuario = async (req, res) => {
   try {
@@ -161,29 +162,41 @@ exports.obtenerUsuariosOrdenados = async (req, res) => {
   }
 }
 
-exports.login=async (req,res)=>{
+exports.login=async (req, res) => {
+
   const {email, contrasena}= req.body;
    try {
-    const usuario = await Usuario.findOne({email});
+    const usuario = await Usuario.findOne({ email });
+
     if (!usuario) {
       return res.status(400).json({
         ok:false,
-        msg: 'El email no existe'
+        msg: 'El email no existe',
+        usuario,
+        email,
+        contrasena,req
       });
     }
-     const contrasenaEncriptada = CryptoJS.MD5(req.body.contrasena).toString();
+    
+     const contrasenaEncriptada = CryptoJS.MD5(contrasena).toString();
 
-     if (!(contrasenaEncriptada==usuario.contrasena)) {
+     if (contrasenaEncriptada!=usuario.contrasena) {
        return res.status(400).json({
         ok:false,
-        msg: 'Contraseña invalida'
+        msg: CryptoJS.MD5(req.body.contrasena).toString(),
+        msg2: usuario.contrasena,
+        usuario
       });
      }
 
      //Generar JWT
+     const token = await generarJWT(usuario._id, usuario.nomUsuario);
+
      res.json({
       ok:true,
-      nomUsuario: usuario.nomUsuario
+      _id:usuario._id,
+      nomUsuario: usuario.nomUsuario,
+      token
      });
     
 
@@ -191,7 +204,8 @@ exports.login=async (req,res)=>{
     console.log(error);
     res.status(500).json({
       ok:false,
-      msg: 'Hubo un problema'
+      msg: 'Hubo un problema',
+      error
     });
   }
 }
