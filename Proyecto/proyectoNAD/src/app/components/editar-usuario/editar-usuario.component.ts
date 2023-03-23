@@ -28,13 +28,13 @@ export class EditarUsuarioComponent implements OnInit {
       nombreUsuario: ['', Validators.required],
       apePaterno: ['', Validators.required],
       apeMaterno: ['', Validators.required],
-      email: ['', Validators.email],
+      //email: ['', Validators.email],
       edad: ['', Validators.required],
       genero: ['', Validators.required],
       rol: ['', Validators.required],
       empresa: ['', Validators.required],
       // status:['',Validators.required],
-      contrasena: ['', Validators.required]
+      //contrasena: ['', Validators.required]
     })
     this.id = this.aRouter.snapshot.paramMap.get('id');
   }
@@ -54,30 +54,31 @@ export class EditarUsuarioComponent implements OnInit {
       nombreUsuario: this.usuarioForm.get('nombreUsuario')?.value,
       apePaterno: this.usuarioForm.get('apePaterno')?.value,
       apeMaterno: this.usuarioForm.get('apeMaterno')?.value,
-      email: this.usuarioForm.get('email')?.value,
+      //email: this.usuarioForm.get('email')?.value,
       edad: this.usuarioForm.get('edad')?.value,
       genero: this.usuarioForm.get('genero')?.value,
       rol: this.usuarioForm.get('rol')?.value,
       empresa: this.usuarioForm.get('empresa')?.value,
       // status : this.usuarioForm.get('status')?.value,
-      contrasena: this.usuarioForm.get('contrasena')?.value,
+      // contrasena: this.usuarioForm.get('contrasena')?.value,
     }
 
     if (this.id !== null) {
       this._usuarioService.editarUsuario(this.id, USUARIO).subscribe(data => {
-        this.router.navigate(['/user']);
+        this.router.navigate(['/user', this.id]);
       }, error => {
         console.log(error);
         this.usuarioForm.reset();
       });
-    } else {
-      console.log(USUARIO);
-      this._usuarioService.crearUsuario(USUARIO).subscribe(data => {
-        window.location.reload();
-      }, error => {
-        console.log(error);
-        this.usuarioForm.reset();
-      });
+      // } else {
+      //   console.log(USUARIO);
+      //   this._usuarioService.crearUsuario(USUARIO).subscribe(data => {
+      //     window.location.reload();
+      //   }, error => {
+      //     console.log(error);
+      //     this.usuarioForm.reset();
+      //   });
+      // }
     }
   }
 
@@ -88,13 +89,13 @@ export class EditarUsuarioComponent implements OnInit {
           nombreUsuario: data.nombreUsuario,
           apePaterno: data.apePaterno,
           apeMaterno: data.apeMaterno,
-          email: data.email,
+          //email: data.email,
           edad: data.edad,
           genero: data.genero,
           rol: data.rol,
           empresa: data.empresa,
           // status : this.usuarioForm.get('status')?.value,
-          contrasena: data.contrasena,
+          //contrasena: data.contrasena,
         })
       });
     }

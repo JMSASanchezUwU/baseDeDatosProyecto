@@ -11,7 +11,7 @@ import {UsuariosService} from '../../services/usuarios.service';
 export class AdministradorComponent implements OnInit {
    listUsuarios:Usuario[]=[];
    usuarios: Usuario[]=[];
-   campo: string = 'nombreUsuario';
+   campo: string = 'nomUsuario';
    orden: number = 1;
    filtro: string = "null";
    valor:string = "";

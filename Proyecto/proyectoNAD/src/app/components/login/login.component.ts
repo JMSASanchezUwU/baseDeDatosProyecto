@@ -6,7 +6,7 @@ import { RolService } from './../../services/rol.service';
 import { Usuario } from './../../models/Usuario';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-// import { Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private fb2: FormBuilder,
-    /* private router: Router*/
+    private router: Router,
     private _usuarioService: UsuariosService,
     private _rolService: RolService,
     private _empresaService: EmpresaService) {
@@ -95,12 +95,14 @@ export class LoginComponent implements OnInit {
   leguearUsuario(email:string, contrasena:string) {
     this._usuarioService.logearUsuario(email,contrasena).subscribe(data => {
      console.log(data);
+     if (data.rol==="Administrador") {
+      this.router.navigate(['/admin', data._id]);
+     } else {
+      this.router.navigate(['/user', data._id]);
+     }
     }, error => {
       console.log(error);
     });
   }
     
 }
-
-
-

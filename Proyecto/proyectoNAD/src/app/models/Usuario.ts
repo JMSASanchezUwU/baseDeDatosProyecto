@@ -3,13 +3,13 @@ export class Usuario {
     nombreUsuario?: string;
     apePaterno?: string;
     apeMaterno?: string;
-    email: string;
+    email?: string;
     edad?: number;
     genero?: string;
     rol?: string;
     empresa?: string;
     status?: number;
-    contrasena:string;
+    contrasena?:string;
 
     constructor(nombreUsuario: string, apePaterno: string, apeMaterno: string, edad: number, rol: string, email: string, genero: string, empresa: string, contrasena: string) {
         this.nombreUsuario=nombreUsuario;

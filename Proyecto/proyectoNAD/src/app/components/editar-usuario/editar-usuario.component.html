@@ -44,7 +44,7 @@
                     <span>*Este campo <strong>es obligatorio!!!</strong>*</span>
                 </div>
             </div>
-            <div class="form-group mt-2">
+            <!-- <div class="form-group mt-2">
                 <input type="email" name="logemail" class="form-style" placeholder="Email" id="logemail"
                     formControlName="email">
                 <i class="input-icon uil uil-at"></i>
@@ -52,7 +52,7 @@
                     *ngIf="usuarioForm.get('email')?.hasError('required') && usuarioForm.get('email')?.touched">
                     <span>*Este campo <strong>es obligatorio!!!</strong>*</span>
                 </div>
-            </div>
+            </div> -->
             <div class="form-group mt-2">
                 <input type="number" name="logpass" class="form-style" placeholder="Edad" id="logpass"
                     formControlName="edad">
@@ -84,7 +84,7 @@
                 </select>
                 <i class="input-icon uil uil-angle-down"></i>
             </div>
-            <div class="form-group mt-2">
+            <!-- <div class="form-group mt-2">
                 <input type="password" name="logpass" class="form-style" placeholder="Contraseña" id="logpass"
                     formControlName="contrasena">
                 <i class="input-icon uil uil-lock-alt"></i>
@@ -92,11 +92,10 @@
                     *ngIf="usuarioForm.get('contrasena')?.hasError('required') && usuarioForm.get('contrasena')?.touched">
                     <span>*Este campo <strong>es obligatorio!!!</strong>*</span>
                 </div>
-            </div>
+            </div> -->
             <button class="btn mt-4" type="submit" [disabled]="usuarioForm.invalid">submit</button>
         </form>
     </div>
     <!-- partial -->
 </body>
-
 </html>

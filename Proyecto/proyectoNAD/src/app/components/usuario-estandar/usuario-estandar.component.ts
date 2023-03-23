@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {UsuariosService} from '../../services/usuarios.service';
 import { Usuario } from './../../models/Usuario';
+import { ActivatedRoute} from '@angular/router';
 
 
 
@@ -11,35 +12,35 @@ import { Usuario } from './../../models/Usuario';
 })
 export class UsuarioEstandarComponent implements OnInit {
   usuario: any;
-  idUsuario= '640ff15447e5f9c1f379a5a6';
+  idUsuario: string | null;
   listUsuarios:Usuario[]=[];
-  constructor(private _usuarioService: UsuariosService) {}
+  constructor(private _usuarioService: UsuariosService,
+            private aRouter: ActivatedRoute,) {
+              this.idUsuario = this.aRouter.snapshot.paramMap?.get('_id')
+            }
+
+           
   ngOnInit(): void {
-    this.obtenerUsuario(this.idUsuario);
+    this.obtenerUsuario();
   } 
 
-  obtenerUsuarios(){
-    this._usuarioService.getUsuarios().subscribe(data=>{
-      this.listUsuarios=data;
-    },error=>{
-      console.log(error);
-    });
-  }
   eliminarUsuario(id:any){
     this._usuarioService.eliminarUsuario(id).subscribe(data =>{
-      this.obtenerUsuario(this.idUsuario);
+      this.obtenerUsuario();
     },error=>{
 console.log(error);
     });
   }
 
-  obtenerUsuario(id: string) {
-    
-    this._usuarioService.getUsuario(id).subscribe(data => {
-      this.usuario = data;
-    }, error => {
-      console.log(error);
-    });
+  obtenerUsuario() {
+    if (this.idUsuario) {
+      this._usuarioService.getUsuario(this.idUsuario).subscribe(data => {
+        this.usuario = data;
+      }, error => {
+        console.log(error);
+      });
+    }
   }
+  
 }
 

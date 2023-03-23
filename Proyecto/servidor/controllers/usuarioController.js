@@ -1,17 +1,20 @@
 const Usuario = require("../models/Usuario");
-const CryptoJS = require("crypto-js");
+const bcrypt = require('bcrypt');
 const {generarJWT}= require('../controllers/helpers/jwt');
+
+
 
 exports.crearUsuario = async (req, res) => {
   try {
     let usuario;
     
      // Encriptar la contraseña utilizando MD5
-     const contrasenaEncriptada = CryptoJS.MD5(req.body.contrasena).toString();
+     //const contrasenaEncriptada = CryptoJS.MD5(req.body.contrasena).toString();
     //Se crea el usuario
     usuario = new Usuario(req.body);
-
-    usuario.contrasena=contrasenaEncriptada;
+    contrasena=req.body.contrasena;
+    const salt = bcrypt.genSaltSync();
+    usuario.contrasena = bcrypt.hashSync( contrasena, salt );
 
     await usuario.save();
 
@@ -40,7 +43,7 @@ exports.obtenerUsuarios = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
   try {
     // Extraemos las propiedades del usuario que se van a actualizar desde la solicitud
-    const { nombreUsuario, apePaterno, apeMaterno, email, edad, genero, rol, empresa, contrasena } = req.body;
+    const { nombreUsuario, apePaterno, apeMaterno, edad, genero, rol, empresa } = req.body;
 
     // Buscamos al usuario en la base de datos por su ID
     const usuario = await Usuario.findById(req.params.id);
@@ -54,12 +57,12 @@ exports.actualizarUsuario = async (req, res) => {
     usuario.nombreUsuario = nombreUsuario;
     usuario.apePaterno = apePaterno;
     usuario.apeMaterno = apeMaterno;
-    usuario.email = email;
+   // usuario.email = email;
     usuario.edad = edad;
     usuario.genero = genero;
     usuario.rol = rol;
     usuario.empresa = empresa;
-    usuario.contrasena = contrasena;
+    //usuario.contrasena = contrasena;
 
     // Guardamos los cambios en la base de datos
     await usuario.save();
@@ -148,19 +151,28 @@ exports.obtenerUsuariosOrdenados = async (req, res) => {
     const filtro = req.query.filtro;
     const valor = req.query.valor;
     let usuarios = [];
-    if (!(filtro == "null")) {
-      usuarios = await Usuario.find({ [filtro]: valor }).sort({ [campo]: orden });
-    } else {
-      usuarios = await Usuario.find().sort({ [campo]: orden });
-    }
-
-
-    res.json(usuarios);
+    //const token = req.headers['authorization'].split(' ')[1];
+    // if (token) {
+    //   jwt.verify(token, config.secret, async (err, decoded) => {
+    //     if (err) {
+    //       return res.status(401).send('Token inválido.');
+    //     } else {
+          if (!(filtro == "null")) {
+            usuarios = await Usuario.find({ [filtro]: valor }).sort({ [campo]: orden });
+          } else {
+            usuarios = await Usuario.find().sort({ [campo]: orden });
+          }
+          res.json(usuarios);
+        //}
+     // });
+    // } else {
+    //   return res.status(401).send('Token no proporcionado.');
+    // }
   } catch (error) {
     console.log(error);
     res.status(500).send('Hubo un error!!! :(');
   }
-}
+};
 
 exports.login=async (req, res) => {
 
@@ -171,21 +183,19 @@ exports.login=async (req, res) => {
     if (!usuario) {
       return res.status(400).json({
         ok:false,
-        msg: 'El email no existe',
-        usuario,
-        email,
-        contrasena,req
+        msg: 'El email no existe'
       });
     }
     
-     const contrasenaEncriptada = CryptoJS.MD5(contrasena).toString();
+    //  const contrasenaEncriptada = CryptoJS.MD5(contrasena).toString();
 
-     if (contrasenaEncriptada!=usuario.contrasena) {
+    // Confirmar si el password hace match
+    const validPassword = bcrypt.compareSync( contrasena, usuario.contrasena );
+
+     if (!validPassword) {
        return res.status(400).json({
         ok:false,
-        msg: CryptoJS.MD5(req.body.contrasena).toString(),
-        msg2: usuario.contrasena,
-        usuario
+        msg:"Contraseña incorrecta"
       });
      }
 
@@ -195,7 +205,7 @@ exports.login=async (req, res) => {
      res.json({
       ok:true,
       _id:usuario._id,
-      nomUsuario: usuario.nomUsuario,
+      rol:usuario.rol,
       token
      });
     
@@ -209,3 +219,22 @@ exports.login=async (req, res) => {
     });
   }
 }
+
+exports.verifyToken = function(req, res, next) {
+  // Verificar si el token JWT está presente en la solicitud
+  const token = req.headers['x-access-token'];
+  if (!token) {
+    return res.status(401).json({ auth: false, message: 'Token no proporcionado.' });
+  }
+
+  // Verificar la validez del token JWT
+  jwt.verify(token, process.env.SECRET_JWT, function(err, decoded) {
+    if (err) {
+      return res.status(500).json({ auth: false, message: 'Error al autenticar el token.' });
+    }
+
+    // Si el token JWT es válido, almacenar el nombre de usuario en la solicitud para su posterior uso
+    req.nomUsuario = decoded.nomUsuario;
+    next();
+  });
+};

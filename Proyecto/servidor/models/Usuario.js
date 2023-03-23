@@ -38,8 +38,7 @@ const usuarioSchema = mongoose.Schema({
         default: 1
     },
     contrasena: {
-        type: String,
-        required: true
+        type: String
     }
 }, {
     collection: 'Usuario' // especificar el nombre de la colección
