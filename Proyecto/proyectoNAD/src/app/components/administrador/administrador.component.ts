@@ -65,11 +65,6 @@ console.log(error);
   handleChangeFiltro(event: Event): void {
     this.filtro = (event.target as HTMLSelectElement).value;
   }
-
-  // handleChangeInput(event: Event): void {
-  //   this.valor = (event.target as HTMLInputElement).value;
-  //   this.obtenerUsuariosOrdenados();
-  // }
   
   handleChangeInput( valor: string): void {
     this.valor = valor;

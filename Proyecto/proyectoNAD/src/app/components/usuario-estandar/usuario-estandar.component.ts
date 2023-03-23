@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {UsuariosService} from '../../services/usuarios.service';
 import { Usuario } from './../../models/Usuario';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router} from '@angular/router';
 
 
 
@@ -15,7 +15,8 @@ export class UsuarioEstandarComponent implements OnInit {
   idUsuario: string | null;
   listUsuarios:Usuario[]=[];
   constructor(private _usuarioService: UsuariosService,
-            private aRouter: ActivatedRoute,) {
+            private aRouter: ActivatedRoute,
+            private router : Router) {
               this.idUsuario = this.aRouter.snapshot.paramMap?.get('_id')
             }
 
@@ -40,6 +41,11 @@ console.log(error);
         console.log(error);
       });
     }
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
   
 }

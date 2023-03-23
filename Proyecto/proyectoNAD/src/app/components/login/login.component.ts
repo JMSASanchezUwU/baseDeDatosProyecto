@@ -92,17 +92,21 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  leguearUsuario(email:string, contrasena:string) {
-    this._usuarioService.logearUsuario(email,contrasena).subscribe(data => {
-     console.log(data);
-     if (data.rol==="Administrador") {
-      this.router.navigate(['/admin', data._id]);
-     } else {
-      this.router.navigate(['/user', data._id]);
-     }
-    }, error => {
-      console.log(error);
-    });
-  }
+  leguearUsuario(email: string, contrasena: string) {
+    this._usuarioService.logearUsuario(email, contrasena)
+        .subscribe(data => {
+            console.log(data);
+            if (data.rol === "Administrador") {
+                this.router.navigate(['/admin', data._id]);
+            } else {
+                this.router.navigate(['/user', data._id]);
+            }
+            // Guardar token en LocalStorage
+            localStorage.setItem('token', data.token);
+        }, error => {
+            console.log(error);
+        });
+}
+
     
 }

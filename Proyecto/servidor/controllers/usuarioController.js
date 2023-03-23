@@ -1,6 +1,8 @@
 const Usuario = require("../models/Usuario");
 const bcrypt = require('bcrypt');
 const {generarJWT}= require('../controllers/helpers/jwt');
+const jwt = require('jsonwebtoken');
+
 
 
 
@@ -151,23 +153,14 @@ exports.obtenerUsuariosOrdenados = async (req, res) => {
     const filtro = req.query.filtro;
     const valor = req.query.valor;
     let usuarios = [];
-    //const token = req.headers['authorization'].split(' ')[1];
-    // if (token) {
-    //   jwt.verify(token, config.secret, async (err, decoded) => {
-    //     if (err) {
-    //       return res.status(401).send('Token inválido.');
-    //     } else {
+
           if (!(filtro == "null")) {
             usuarios = await Usuario.find({ [filtro]: valor }).sort({ [campo]: orden });
           } else {
             usuarios = await Usuario.find().sort({ [campo]: orden });
           }
           res.json(usuarios);
-        //}
-     // });
-    // } else {
-    //   return res.status(401).send('Token no proporcionado.');
-    // }
+       
   } catch (error) {
     console.log(error);
     res.status(500).send('Hubo un error!!! :(');
@@ -222,7 +215,8 @@ exports.login=async (req, res) => {
 
 exports.verifyToken = function(req, res, next) {
   // Verificar si el token JWT está presente en la solicitud
-  const token = req.headers['x-access-token'];
+  const token = req.headers.authorization;
+
   if (!token) {
     return res.status(401).json({ auth: false, message: 'Token no proporcionado.' });
   }
